@@ -7,9 +7,9 @@ export default function Hero() {
 
         {/* ── EDITE: frase de impacto (3 linhas) ── */}
         <h1 className="hero-title">
-          <div>Criando</div>
+          <span className="line1">Criando</span>
           <span className="line2">experiências</span>
-          <div>digitais.</div>
+          <span className="line3">digitais.</span>
         </h1>
 
         {/* ── EDITE: parágrafo de apresentação ── */}
