@@ -320,7 +320,7 @@ footer{
   nav{padding:16px 20px}
   .nav-links{display:none}
   .hero{padding:80px 20px 60px;align-items:flex-start;min-height:auto;overflow-x:hidden}
-  .hero-title{font-size:clamp(48px,13vw,72px);letter-spacing:-1px}
+  .hero-title{font-size:clamp(28px,9vw,56px);letter-spacing:-0.5px}
   section{padding:60px 20px}
   .contact-wrap{grid-template-columns:1fr}
   .hero-counter{display:none}
