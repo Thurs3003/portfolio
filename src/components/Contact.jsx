@@ -5,7 +5,7 @@ const MY_EMAIL  = 'arthur.assismatos@gmail.com'
 // Coloque seu número com DDI+DDD, ex: 5511999999999
 const WHATSAPP  = '5511937739808'
 const LINKEDIN  = 'https://www.linkedin.com/in/arthur-matos-108713295/'
-const GITHUB    = 'hhttps://github.com/Thurs3003/ArthurMatos-dev'
+const GITHUB    = 'hhttps://github.com/Thurs3003'
 
 // Mensagem padrão no WhatsApp ao clicar no link
 const WA_MSG    = encodeURIComponent('Olá! Vi seu portfólio e gostaria de conversar sobre um projeto.')
