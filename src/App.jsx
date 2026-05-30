@@ -7,12 +7,15 @@ import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import ScrollProgress from "./components/ScrollProgress";
+import LoadingScreen from './components/LoadingScreen';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   return (
     <>
       <LoadingScreen />
       <ScrollProgress />
+      <ScrollToTop />
       <Cursor />
       <Navbar />
       <Hero />
