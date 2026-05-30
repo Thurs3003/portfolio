@@ -1,6 +1,5 @@
-// ── EDITE: adicione seus projetos aqui ─────────────────────────────────────
-// Para adicionar um projeto: copie o objeto e cole no array.
-// url: deixe null para não mostrar o link.
+import { motion } from 'framer-motion'
+
 const projects = [
   {
     num: '01',
@@ -48,18 +47,70 @@ const projects = [
   },
 ]
 
+// Variantes do container — controla o stagger dos filhos
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2, // cada card aparece 0.2s depois do anterior
+    },
+  },
+}
+
+// Variantes de cada card — vem de baixo
+const cardVariants = {
+  hidden: { opacity: 0, y: 60 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+}
+
+// Variantes do header da seção
+const headerVariants = {
+  hidden: { opacity: 0, x: -40 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+}
+
 export default function Projects() {
   return (
     <section id="projects">
-      <div className="section-header">
+
+      {/* Header animado — vem da esquerda */}
+      <motion.div
+        className="section-header"
+        variants={headerVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <span className="section-num">// 03</span>
         <h2 className="section-title">Projetos</h2>
         <div className="section-line" />
-      </div>
+      </motion.div>
 
-      <div className="projects-grid">
+      {/* Grid com stagger — cada card entra em sequência */}
+      <motion.div
+        className="projects-grid"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.1 }}
+      >
         {projects.map(p => (
-          <div key={p.num} className="project-card">
+          <motion.div
+            key={p.num}
+            className="project-card"
+            variants={cardVariants}
+            whileHover={{ x: 6 }} // desliza levemente para direita no hover
+            transition={{ duration: 0.2 }}
+          >
             <div>
               <div className="project-num">{p.num}</div>
               <div className="project-tag">{p.tag}</div>
@@ -88,10 +139,10 @@ export default function Projects() {
             ) : (
               <div className="project-link disabled">+</div>
             )}
-          </div>
+          </motion.div>
         ))}
+      </motion.div>
 
-      </div>
     </section>
   )
 }
