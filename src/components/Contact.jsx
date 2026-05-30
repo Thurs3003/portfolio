@@ -1,27 +1,30 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 
-// ── EDITE: seus dados de contato ────────────────────────────────────────────
-const MY_EMAIL  = 'arthur.assismatos@gmail.com'
-// Coloque seu número com DDI+DDD, ex: 5511999999999
-const WHATSAPP  = '5511937739808'
-const LINKEDIN  = 'https://www.linkedin.com/in/arthur-matos-108713295/'
-const GITHUB    = 'https://github.com/Thurs3003'
+const MY_EMAIL = 'arthur.assismatos@gmail.com'
+const WHATSAPP = '5511937739808'
+const LINKEDIN = 'https://www.linkedin.com/in/arthur-matos-108713295/'
+const GITHUB   = 'https://github.com/Thurs3003'
+const WA_MSG   = encodeURIComponent('Olá! Vi seu portfólio e gostaria de conversar sobre um projeto.')
+const INITIAL  = { name: '', email: '', message: '' }
 
-// Mensagem padrão no WhatsApp ao clicar no link
-const WA_MSG    = encodeURIComponent('Olá! Vi seu portfólio e gostaria de conversar sobre um projeto.')
-
-const INITIAL   = { name: '', email: '', message: '' }
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.5, ease: 'easeOut', delay },
+})
 
 export default function Contact() {
   const [form,   setForm]   = useState(INITIAL)
   const [errors, setErrors] = useState({})
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [status, setStatus] = useState('idle')
 
   const validate = () => {
     const e = {}
-    if (!form.name.trim())    e.name    = 'Campo obrigatório'
-    if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'E-mail inválido'
-    if (!form.message.trim()) e.message = 'Campo obrigatório'
+    if (!form.name.trim())                e.name    = 'Campo obrigatório'
+    if (!/\S+@\S+\.\S+/.test(form.email)) e.email   = 'E-mail inválido'
+    if (!form.message.trim())             e.message = 'Campo obrigatório'
     return e
   }
 
@@ -35,12 +38,8 @@ export default function Contact() {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
-
     setStatus('sending')
     try {
-      // FormSubmit.co — FREE, sem backend, sem conta.
-      // Na PRIMEIRA submissão, chegará um e-mail de ativação no seu Gmail.
-      // Clique no link de confirmação e pronto — todas as próximas mensagens chegam normalmente.
       const res = await fetch(`https://formsubmit.co/ajax/${MY_EMAIL}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -52,12 +51,8 @@ export default function Contact() {
           _captcha: 'false',
         }),
       })
-      if (res.ok) {
-        setStatus('success')
-        setForm(INITIAL)
-      } else {
-        setStatus('error')
-      }
+      if (res.ok) { setStatus('success'); setForm(INITIAL) }
+      else          setStatus('error')
     } catch {
       setStatus('error')
     }
@@ -65,61 +60,101 @@ export default function Contact() {
 
   return (
     <section id="contact">
-      <div className="section-header">
+
+      {/* Header */}
+      <motion.div
+        className="section-header"
+        initial={{ opacity: 0, x: -40 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
         <span className="section-num">// 04</span>
         <h2 className="section-title">Contato</h2>
         <div className="section-line" />
-      </div>
+      </motion.div>
 
       <div className="contact-wrap">
-        {/* ── Info ── */}
-        <div className="contact-info">
-          {/* EDITE: chamada para ação */}
+
+        {/* Info — entra da esquerda */}
+        <motion.div
+          className="contact-info"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
           <div className="contact-tagline">
             Vamos construir algo <span>incrível</span> juntos?
           </div>
-          {/* EDITE: texto de disponibilidade */}
           <p className="contact-p">
             Disponível para projetos freelance de sites, landing pages, e-commerces e sistemas com Supabase. Respondo em até 24h.
           </p>
-          <div className="contact-links">
-            <a href={`mailto:${MY_EMAIL}`} className="contact-link">✉ {MY_EMAIL}</a>
-            <a href={`https://wa.me/${WHATSAPP}?text=${WA_MSG}`} target="_blank" rel="noreferrer" className="contact-link">
-              💬 WhatsApp
-            </a>
-            <a href={LINKEDIN} target="_blank" rel="noreferrer" className="contact-link">
-              💼 LinkedIn
-            </a>
-            <a href={GITHUB} target="_blank" rel="noreferrer" className="contact-link">
-              🐙 GitHub
-            </a>
-          </div>
-        </div>
 
-        {/* ── Form ── */}
-        <div className="contact-form-wrap">
+          {/* Links com stagger */}
+          <motion.div
+            className="contact-links"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.3 } },
+            }}
+          >
+            {[
+              { href: `mailto:${MY_EMAIL}`,                            label: `✉ ${MY_EMAIL}` },
+              { href: `https://wa.me/${WHATSAPP}?text=${WA_MSG}`,      label: '💬 WhatsApp', external: true },
+              { href: LINKEDIN,                                         label: '💼 LinkedIn',  external: true },
+              { href: GITHUB,                                           label: '🐙 GitHub',    external: true },
+            ].map(link => (
+              <motion.a
+                key={link.href}
+                href={link.href}
+                className="contact-link"
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noreferrer' : undefined}
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  show:   { opacity: 1, x: 0, transition: { duration: 0.4 } },
+                }}
+                whileHover={{ x: 6 }}
+                transition={{ duration: 0.2 }}
+              >
+                {link.label}
+              </motion.a>
+            ))}
+          </motion.div>
+        </motion.div>
+
+        {/* Form — entra da direita */}
+        <motion.div
+          className="contact-form-wrap"
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
+        >
           {status === 'success' ? (
-            <div className="form-success">
+            <motion.div
+              className="form-success"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+            >
               <div className="form-success-icon">✅</div>
               <div className="form-success-title">Mensagem enviada!</div>
-              <div className="form-success-text">
-                Recebi seu e-mail e responderei em até 24h.
-              </div>
-              <button
-                className="form-btn"
-                style={{ marginTop: 32 }}
-                onClick={() => setStatus('idle')}
-              >
+              <div className="form-success-text">Recebi seu e-mail e responderei em até 24h.</div>
+              <button className="form-btn" style={{ marginTop: 32 }} onClick={() => setStatus('idle')}>
                 Enviar outra mensagem
               </button>
-            </div>
+            </motion.div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className={status === 'sending' ? 'form-sending' : ''}>
               <div className="form-group">
                 <label className="form-label">Nome</label>
                 <input
-                  name="name"
-                  type="text"
+                  name="name" type="text"
                   className={`form-input${errors.name ? ' error' : ''}`}
                   placeholder="Seu nome"
                   value={form.name}
@@ -131,8 +166,7 @@ export default function Contact() {
               <div className="form-group" style={{ marginTop: 16 }}>
                 <label className="form-label">E-mail</label>
                 <input
-                  name="email"
-                  type="email"
+                  name="email" type="email"
                   className={`form-input${errors.email ? ' error' : ''}`}
                   placeholder="seu@email.com"
                   value={form.email}
@@ -159,12 +193,20 @@ export default function Contact() {
                 </p>
               )}
 
-              <button type="submit" className="form-btn" disabled={status === 'sending'}>
+              <motion.button
+                type="submit"
+                className="form-btn"
+                disabled={status === 'sending'}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
+              >
                 {status === 'sending' ? 'Enviando...' : 'Enviar mensagem →'}
-              </button>
+              </motion.button>
             </form>
           )}
-        </div>
+        </motion.div>
+
       </div>
     </section>
   )
